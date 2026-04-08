@@ -1,0 +1,28 @@
+## Docker Compose for CubeSat Alert System
+# To run the entire stack on any server, just type: docker compose up -d
+
+version: '3.8'
+
+services:
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://backend:8000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ALLOWED_ORIGINS=http://localhost:5173
+      - N2YO_API_KEY=your_n2yo_api_key_here
+    volumes:
+      - ./models:/app/models  # Allows you to swap .pkl models easily
